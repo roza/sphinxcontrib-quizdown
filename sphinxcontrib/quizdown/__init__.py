@@ -63,7 +63,6 @@ def add_quizdown_lib(app, pagename, templatename, context, doctree):
     config_json = json.dumps(app.config.quizdown_config)
 
     delayed_init_script = f"""
-    <script>
         function init_quizdown() {{
             if (typeof quizdown === "undefined") {{
                 setTimeout(init_quizdown, 50);
@@ -72,7 +71,6 @@ def add_quizdown_lib(app, pagename, templatename, context, doctree):
             }}
         }}
         init_quizdown();
-    </script>
     """
     app.add_js_file(None, body=delayed_init_script)
 
