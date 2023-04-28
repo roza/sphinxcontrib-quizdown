@@ -55,13 +55,27 @@ class Quizdown(SphinxDirective):
 
 def add_quizdown_lib(app, pagename, templatename, context, doctree):
     quizdown_js = app.config.quizdown_config.setdefault(
-        'quizdown_js', 
+        'quizdown_js',
         'https://cdn.jsdelivr.net/gh/bonartm/quizdown-js@latest/public/build/quizdown.js'
     )
 
     app.add_js_file(quizdown_js)
     config_json = json.dumps(app.config.quizdown_config)
-    app.add_js_file(None, body=f"quizdown.init({config_json});")
+
+    delayed_init_script = f"""
+    <script>
+        function init_quizdown() {{
+            if (typeof quizdown === "undefined") {{
+                setTimeout(init_quizdown, 50);
+            }} else {{
+                quizdown.init({config_json});
+            }}
+        }}
+        init_quizdown();
+    </script>
+    """
+    app.add_js_file(None, body=delayed_init_script)
+
 
 
 def setup(app):
